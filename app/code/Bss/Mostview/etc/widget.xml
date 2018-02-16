@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:helloworld:Magento_Widget:etc/widget.xsd">
+    <widget class="Bss\Mostview\Block\Widget\ProductWidget" id="bss_mostview_product">
+        <label>Blog Posts Hot</label>
+        <description>Postsasdasd</description>
+        <parameters>
+            <parameter name="post_name" sort_order="10" visible="true" xsi:type="text">
+                <label>Custom Posts Label</label>
+            </parameter>
+            <parameter name="show_price" xsi:type="select" visible="true"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Price</label>
+            </parameter>
+            <parameter name="show_add_to_cart" xsi:type="select" visible="true"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Add To Cart</label>
+            </parameter>
+            <parameter name="show_wishlist" xsi:type="select" visible="true"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Add to Wishlist</label>
+            </parameter>
+            <parameter name="show_compare" xsi:type="select" visible="true"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Add To Compare</label>
+            </parameter>
+            <parameter name="wd_category" xsi:type="multiselect" visible="true"
+                       source_model="Bss\Mostview\Model\Categories" required="true">
+                <label translate="true">Categories</label>
+            </parameter>
+            <!--<parameter name="from_date" sort_order="10" visible="true" xsi:type="text">-->
+                <!--<label>From Date</label>-->
+            <!--</parameter>-->
+            <!--<parameter name="to_date" sort_order="10" visible="true" xsi:type="text">-->
+                <!--<label>To Date</label>-->
+            <!--</parameter>-->
+            <parameter name="collection_sort_by" xsi:type="select" visible="true"
+                       source_model="Bss\Mostview\Model\SortBy" >
+                <label translate="true">Sort Collection By</label>
+            </parameter>
+            <parameter name="collection_sort_order" xsi:type="select" visible="true"
+                       source_model="Bss\Mostview\Model\SortOrder">
+                <label translate="true">Sort Collection Order</label>
+            </parameter>
+            <!--<parameter name="from_date" sort_order="11" xsi:type="text" visible="true"-->
+                       <!--source_model="Bss\Mostview\Model\Datepicker" required="true">-->
+                <!--<label translate="true">From date</label>-->
+            <!--</parameter>-->
+        </parameters>
+    </widget>
+</widgets>

@@ -2,7 +2,10 @@
 return array (
   'modules' => 
   array (
+    'Bss_Mostview' => 1,
+    'ClassyLlama_SortedProductsWidget' => 1,
     'Magento_Store' => 1,
+    'Magebees_Mostviewed' => 1,
     'Magento_Directory' => 1,
     'Magento_AdvancedPricingImportExport' => 1,
     'Magento_Config' => 1,
