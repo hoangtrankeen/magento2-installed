@@ -39,8 +39,6 @@ class Mostviewproduct extends \Magento\Catalog\Block\Product\AbstractProduct
 
     public function getMostViewed()
     {
-
-
         return $this->addViewsCountCustom();
     }
 
@@ -72,7 +70,7 @@ class Mostviewproduct extends \Magento\Catalog\Block\Product\AbstractProduct
     }
 
 //    Get Category value
-    protected function getCategory()
+    protected function getCategories()
     {
 
         return $this->getData('wd_category');
@@ -146,8 +144,8 @@ class Mostviewproduct extends \Magento\Catalog\Block\Product\AbstractProduct
             $collection->getSelect()->where('logged_at >= ?', $from)->where('logged_at <= ?', $to);
         }
 
-        if ($this->getCategory()){
-            $collection->addCategoriesFilter( (array('in' => $this->getCategory())));
+        if ($this->getCategories()){
+            $collection->addCategoriesFilter( (array('in' => $this->getCategories())));
         }
 
         if ($this->getSortBy()) {
