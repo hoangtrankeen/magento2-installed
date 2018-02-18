@@ -155,6 +155,43 @@ class Mostviewproduct extends \Magento\Catalog\Block\Product\AbstractProduct
         return $collection;
     }
 
+    public function getUniqueSliderKey()
+    {
+        $key = uniqid();
+        return $key;
+    }
+
+
+    public function getPagerHtml()
+    {
+        $total_limit=$this->getNoOfProduct();
+        $pagination=$this->getProductsPerPage();
+        $page_arr=explode(",", $pagination);
+        $limit=[];
+        foreach ($page_arr as $page) {
+            $limit[$page]=$page;
+        }
+
+        if ($this->getProductCollection()->getSize()) {
+            if (!$this->pager) {
+                $this->pager = $this->getLayout()->createBlock(
+                    'Magento\Catalog\Block\Product\Widget\Html\Pager',
+                    'mostviewed.pager'
+                );
+
+                $this->pager->setAvailableLimit($limit)
+                    ->setLimitVarName('mv_limit')
+                    ->setPageVarName('mp')
+                    ->setShowPerPage(true)
+                    ->setTotalLimit($total_limit)
+                    ->setCollection($this->getProductCollection());
+            }
+            if ($this->pager instanceof \Magento\Framework\View\Element\AbstractBlock) {
+                return $this->pager->toHtml();
+            }
+        }
+        return '';
+    }
 
 
 

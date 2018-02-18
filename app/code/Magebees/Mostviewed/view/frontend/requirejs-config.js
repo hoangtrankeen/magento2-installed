@@ -1,10 +1,10 @@
 var config = {
-   
+
     paths: {
-         "magebees/mvowlcarousel" : "Magebees_Mostviewed/js/owl.carousel.min",
-         "magebeesMostviewed": "Magebees_Mostviewed/js/magebeesMostviewed"
+        "magebees/mvowlcarousel" : "Bss_Mostview/js/owl.carousel.min",
+        "magebeesMostviewed": "Bss_Mostview/js/magebeesMostviewed"
     },
-     shim: {
+    shim: {
         'magebees/mvowlcarousel': {
             deps: ['jquery']
         },}

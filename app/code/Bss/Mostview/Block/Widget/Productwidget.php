@@ -6,6 +6,11 @@ use Bss\Mostview\Block\Mostviewproduct;
 
 class Productwidget extends Mostviewproduct implements BlockInterface {
 
-    protected $_template = "widget/mostview.phtml";
+    protected $_template = "widget/mostviewslider.phtml";
+
+    public function getShowSlider()
+    {
+        return true;
+    }
 
 }

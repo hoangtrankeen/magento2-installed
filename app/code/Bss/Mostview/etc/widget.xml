@@ -4,9 +4,41 @@
         <label>Blog Posts Hot</label>
         <description>Postsasdasd</description>
         <parameters>
-            <parameter name="post_name" sort_order="10" visible="true" xsi:type="text">
-                <label>Custom Posts Label</label>
+            <parameter name="title" xsi:type="text" required="false" visible="true">
+                <label translate="true">Title</label>
             </parameter>
+            <parameter name="show_pager" xsi:type="select" visible="true"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Display Page Control</label>
+            </parameter>
+            <parameter name="products_per_page" xsi:type="text" required="true" visible="true">
+                <label translate="true">Number of Products per Page</label>
+                <depends>
+                    <parameter name="show_pager" value="1" />
+                </depends>
+                <value>5</value>
+            </parameter>
+            <parameter name="products_count" xsi:type="text" required="true" visible="true">
+                <label translate="true">Number of Products to Display</label>
+                <value>10</value>
+            </parameter>
+            <parameter name="template" xsi:type="select" required="true" visible="true">
+                <label translate="true">Template</label>
+                <options>
+                    <option name="default" value="product/widget/content/grid.phtml" selected="true">
+                        <label translate="true">Products Grid Template</label>
+                    </option>
+                </options>
+            </parameter>
+            <parameter name="template" xsi:type="select" required="true" visible="true">
+                <label translate="true">Template</label>
+                <options>
+                    <option name="default" value="product/widget/content/grid.phtml" selected="true">
+                        <label translate="true">Products Grid Template</label>
+                    </option>
+                </options>
+            </parameter>
+            <!--Custom-->
             <parameter name="show_price" xsi:type="select" visible="true"
                        source_model="Magento\Config\Model\Config\Source\Yesno">
                 <label translate="true">Show Price</label>
@@ -27,12 +59,12 @@
                        source_model="Bss\Mostview\Model\Categories" required="true">
                 <label translate="true">Categories</label>
             </parameter>
-            <!--<parameter name="from_date" sort_order="10" visible="true" xsi:type="text">-->
-                <!--<label>From Date</label>-->
-            <!--</parameter>-->
-            <!--<parameter name="to_date" sort_order="10" visible="true" xsi:type="text">-->
-                <!--<label>To Date</label>-->
-            <!--</parameter>-->
+            <parameter name="from_date" sort_order="10" visible="true" xsi:type="text">
+                <label>From Date</label>
+            </parameter>
+            <parameter name="to_date" sort_order="11" visible="true" xsi:type="text">
+                <label>To Date</label>
+            </parameter>
             <parameter name="collection_sort_by" xsi:type="select" visible="true"
                        source_model="Bss\Mostview\Model\SortBy" >
                 <label translate="true">Sort Collection By</label>
@@ -41,10 +73,27 @@
                        source_model="Bss\Mostview\Model\SortOrder">
                 <label translate="true">Sort Collection Order</label>
             </parameter>
-            <!--<parameter name="from_date" sort_order="11" xsi:type="text" visible="true"-->
-                       <!--source_model="Bss\Mostview\Model\Datepicker" required="true">-->
-                <!--<label translate="true">From date</label>-->
-            <!--</parameter>-->
+
+
+            <parameter name="cache_lifetime" xsi:type="text" visible="true">
+                <label translate="true">Cache Lifetime (Seconds)</label>
+                <description translate="true">86400 by default, if not set. To refresh instantly, clear the Blocks HTML Output cache.</description>
+            </parameter>
+            <parameter name="condition" xsi:type="conditions" visible="true" required="true" sort_order="10"
+                       class="Magento\CatalogWidget\Block\Product\Widget\Conditions">
+                <label translate="true">Conditions</label>
+            </parameter>
         </parameters>
+        <containers>
+            <container name="content">
+                <template name="grid" value="default" />
+            </container>
+            <container name="content.top">
+                <template name="grid" value="default" />
+            </container>
+            <container name="content.bottom">
+                <template name="grid" value="default" />
+            </container>
+        </containers>
     </widget>
 </widgets>
