@@ -1,43 +1,14 @@
 <?xml version="1.0" ?>
 <widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:helloworld:Magento_Widget:etc/widget.xsd">
-    <widget class="Bss\Mostview\Block\Widget\ProductWidget" id="bss_mostview_product">
-        <label>Blog Posts Hot</label>
-        <description>Postsasdasd</description>
+
+    <widget class="Bss\Mostview\Block\Widget\Posts" id="test">
+        <label>Blog Tao</label>
+        <description>Posts</description>
         <parameters>
             <parameter name="title" xsi:type="text" required="false" visible="true">
                 <label translate="true">Title</label>
             </parameter>
-            <parameter name="show_pager" xsi:type="select" visible="true"
-                       source_model="Magento\Config\Model\Config\Source\Yesno">
-                <label translate="true">Display Page Control</label>
-            </parameter>
-            <parameter name="products_per_page" xsi:type="text" required="true" visible="true">
-                <label translate="true">Number of Products per Page</label>
-                <depends>
-                    <parameter name="show_pager" value="1" />
-                </depends>
-                <value>5</value>
-            </parameter>
-            <parameter name="products_count" xsi:type="text" required="true" visible="true">
-                <label translate="true">Number of Products to Display</label>
-                <value>10</value>
-            </parameter>
-            <parameter name="template" xsi:type="select" required="true" visible="true">
-                <label translate="true">Template</label>
-                <options>
-                    <option name="default" value="product/widget/content/grid.phtml" selected="true">
-                        <label translate="true">Products Grid Template</label>
-                    </option>
-                </options>
-            </parameter>
-            <parameter name="template" xsi:type="select" required="true" visible="true">
-                <label translate="true">Template</label>
-                <options>
-                    <option name="default" value="product/widget/content/grid.phtml" selected="true">
-                        <label translate="true">Products Grid Template</label>
-                    </option>
-                </options>
-            </parameter>
+
             <!--Custom-->
             <parameter name="show_price" xsi:type="select" visible="true"
                        source_model="Magento\Config\Model\Config\Source\Yesno">
@@ -55,14 +26,28 @@
                        source_model="Magento\Config\Model\Config\Source\Yesno">
                 <label translate="true">Show Add To Compare</label>
             </parameter>
+
+            <parameter name="out_stock" xsi:type="select" visible="true"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Display Out Of Stock Products</label>
+            </parameter>
+
+            <parameter name="wd_mostviewed" xsi:type="select" visible="true"
+                       source_model="Bss\Mostview\Model\Showproduct">
+                <label translate="true">Select Mostviewed Products Type</label>
+                <description translate="true">You can display all products or display by categories.</description>
+            </parameter>
             <parameter name="wd_category" xsi:type="multiselect" visible="true"
                        source_model="Bss\Mostview\Model\Categories" required="true">
                 <label translate="true">Categories</label>
+                <depends>
+                    <parameter name="wd_mostviewed" value="1" />
+                </depends>
             </parameter>
-            <parameter name="from_date" sort_order="10" visible="true" xsi:type="text">
+            <parameter name="from_date" visible="true" xsi:type="text">
                 <label>From Date</label>
             </parameter>
-            <parameter name="to_date" sort_order="11" visible="true" xsi:type="text">
+            <parameter name="to_date"  visible="true" xsi:type="text">
                 <label>To Date</label>
             </parameter>
             <parameter name="collection_sort_by" xsi:type="select" visible="true"
@@ -74,26 +59,38 @@
                 <label translate="true">Sort Collection Order</label>
             </parameter>
 
+            <parameter name="wd_slider" xsi:type="select" visible="true"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Add Slider For Product</label>
+                <description translate="true"><![CDATA[Select Yes for display Slider.<br/>
+Note: Works only with Mostviewed Products Grid Template.]]></description>
+            </parameter>
 
-            <parameter name="cache_lifetime" xsi:type="text" visible="true">
-                <label translate="true">Cache Lifetime (Seconds)</label>
-                <description translate="true">86400 by default, if not set. To refresh instantly, clear the Blocks HTML Output cache.</description>
-            </parameter>
-            <parameter name="condition" xsi:type="conditions" visible="true" required="true" sort_order="10"
-                       class="Magento\CatalogWidget\Block\Product\Widget\Conditions">
-                <label translate="true">Conditions</label>
-            </parameter>
+
+
+            <!--<parameter name="template" xsi:type="select" required="true" visible="true">-->
+                <!--<label translate="true">Template</label>-->
+                <!--<options>-->
+                    <!--<option name="default" value="mostviewed_grid.phtml" selected="true">-->
+                        <!--<label translate="true">Mostviewed Products Grid Template</label>-->
+                    <!--</option>-->
+                    <!--<option name="list_default"-->
+                            <!--value="mostviewed_default_list.phtml">-->
+                        <!--<label translate="true">Mostviewed Products Images and Names Template</label>-->
+                    <!--</option>-->
+                <!--</options>-->
+            <!--</parameter>-->
+
+            <!--<parameter name="from_date" xsi:type="block" required="true" visible="true" sort_order="3">-->
+                <!--<label translate="true">From Date</label>-->
+                <!--<block class="Bss\Mostview\Block\Adminhtml\Widget\Date"/>-->
+            <!--</parameter>-->
+            <!--<parameter name="to_date" xsi:type="block" required="true" visible="true" sort_order="3">-->
+                <!--<label translate="true">To Date</label>-->
+                <!--<block class="Bss\Mostview\Block\Adminhtml\Widget\DatePicker"/>-->
+            <!--</parameter>-->
+
         </parameters>
-        <containers>
-            <container name="content">
-                <template name="grid" value="default" />
-            </container>
-            <container name="content.top">
-                <template name="grid" value="default" />
-            </container>
-            <container name="content.bottom">
-                <template name="grid" value="default" />
-            </container>
-        </containers>
     </widget>
+
 </widgets>

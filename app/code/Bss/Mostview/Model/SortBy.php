@@ -7,7 +7,8 @@ class SortBy implements \Magento\Framework\Option\ArrayInterface
     {
         return [
             ['value' => 'name', 'label' => __('Product Name')],
-            ['value' => 'price', 'label' => __('Price')]
+            ['value' => 'price', 'label' => __('Price')],
+            ['value' => 'views', 'label' => __('Views')]
         ];
     }
 }

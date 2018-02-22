@@ -19,6 +19,7 @@ class Mostviewproduct extends \Magento\Catalog\Block\Product\AbstractProduct
         \Magento\Catalog\Block\Product\Context $context,
         \Magento\Framework\App\ResourceConnection $resource,
         \Magento\Framework\Url\Helper\Data $urlHelper,
+        \Magento\CatalogInventory\Helper\Stock $stockHelper,
         \Magento\Reports\Model\ResourceModel\Product\CollectionFactory $mostViewedCollectionFactory,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magento\Reports\Model\Event\TypeFactory $eventTypeFactory,
@@ -29,6 +30,7 @@ class Mostviewproduct extends \Magento\Catalog\Block\Product\AbstractProduct
     {
         $this->_coreResource = $resource;
         $this->urlHelper = $urlHelper;
+        $this->stockHelper = $stockHelper;
         $this->mostViewedCollection = $mostViewedCollectionFactory->create();
         $this->_productCollectionFactory = $productCollectionFactory;
         $this->_eventTypeFactory = $eventTypeFactory;
@@ -39,7 +41,90 @@ class Mostviewproduct extends \Magento\Catalog\Block\Product\AbstractProduct
 
     public function getMostViewed()
     {
-        return $this->addViewsCountCustom();
+        return $this->addViewsCountCustom($this->getFromDate(), $this->getToDate());
+    }
+
+    public function addViewsCountCustom($from = '', $to = '')
+    {
+//            die($this->getData('from_date'));
+        /**
+         * Getting event type id for catalog_product_view event
+         */
+        $storeId = $this->_storeManager->getStore()->getId();
+
+        $collection = $this->mostViewedCollection
+            ->addAttributeToSelect('*')
+            ->setStoreId($storeId)
+            ->addStoreFilter($storeId);
+
+        $eventTypes = $this->_eventTypeFactory->create()->getCollection();
+        foreach ($eventTypes as $eventType) {
+            if ($eventType->getEventName() == 'catalog_product_view') {
+                $productViewEvent = (int)$eventType->getId();
+                break;
+            }
+        }
+
+
+        if ($this->getSortBy() == 'views') {
+            $collection->getSelect()->reset()->from(
+                ['report_table_views' => $this->mostViewedCollection->getTable('report_event')],
+                ['views' => 'COUNT(report_table_views.event_id)']
+            )->join(
+                ['e' => $this->mostViewedCollection->getProductEntityTableName()],
+                'e.entity_id = report_table_views.object_id'
+            )->where(
+                'report_table_views.event_type_id = ?',
+                $productViewEvent
+            )->group(
+                'e.entity_id'
+            )->order(
+                'views ' .$this->getSortOrder()
+            )->having(
+                'COUNT(report_table_views.event_id) > ?',
+                0
+            );
+        } else {
+            $collection->getSelect()->reset()->from(
+                ['report_table_views' => $this->mostViewedCollection->getTable('report_event')],
+                ['views' => 'COUNT(report_table_views.event_id)']
+            )->join(
+                ['e' => $this->mostViewedCollection->getProductEntityTableName()],
+                'e.entity_id = report_table_views.object_id'
+            )->where(
+                'report_table_views.event_type_id = ?',
+                $productViewEvent
+            )->group(
+                'e.entity_id'
+            )->having(
+                'COUNT(report_table_views.event_id) > ?',
+                0
+            );
+        }
+
+        if ($this->getSortBy() == 'name') {
+            $collection->addAttributeToSort($this->getSortBy(), $this->getSortOrder());
+        }
+
+        if ($this->getSortBy() == 'price') {
+            $collection->addAttributeToSort($this->getSortBy(), $this->getSortOrder());
+        }
+
+
+        if ($from != '' && $to != '') {
+            $collection->getSelect()->where('logged_at >= ?', $from)->where('logged_at <= ?', $to);
+        }
+
+        if ($this->getCategories()) {
+            $collection->addCategoriesFilter((array('in' => $this->getCategories())));
+        }
+
+        if (!$this->getOutOfStock()) {
+            $this->stockHelper->addInStockFilterToCollection($collection);
+        }
+
+
+        return $collection;
     }
 
     /**
@@ -79,6 +164,8 @@ class Mostviewproduct extends \Magento\Catalog\Block\Product\AbstractProduct
 
     protected function getFromDate()
     {
+
+
         return $this->getData('from_date');
     }
 
@@ -104,56 +191,15 @@ class Mostviewproduct extends \Magento\Catalog\Block\Product\AbstractProduct
         return $this->getData('collection_sort_order');
     }
 
-    public function addViewsCountCustom($from = '', $to = '')
+
+    public function getOutOfStock()
     {
-        /**
-         * Getting event type id for catalog_product_view event
-         */
-        $storeId = $this->_storeManager->getStore()->getId();
-
-        $collection = $this->mostViewedCollection
-            ->addAttributeToSelect('*')
-            ->setStoreId($storeId)
-            ->addStoreFilter($storeId);
-
-        $eventTypes = $this->_eventTypeFactory->create()->getCollection();
-        foreach ($eventTypes as $eventType) {
-            if ($eventType->getEventName() == 'catalog_product_view') {
-                $productViewEvent = (int)$eventType->getId();
-                break;
-            }
-        }
-
-        $collection->getSelect()->reset()->from(
-            ['report_table_views' => $this->mostViewedCollection->getTable('report_event')],
-            ['views' => 'COUNT(report_table_views.event_id)']
-        )->join(
-            ['e' => $this->mostViewedCollection->getProductEntityTableName()],
-            'e.entity_id = report_table_views.object_id'
-        )->where(
-            'report_table_views.event_type_id = ?',
-            $productViewEvent
-        )->group(
-            'e.entity_id'
-        )->having(
-            'COUNT(report_table_views.event_id) > ?',
-            0
-        );
-
-        if ($from != '' && $to != '') {
-            $collection->getSelect()->where('logged_at >= ?', $from)->where('logged_at <= ?', $to);
-        }
-
-        if ($this->getCategories()){
-            $collection->addCategoriesFilter( (array('in' => $this->getCategories())));
-        }
-
-        if ($this->getSortBy()) {
-            $collection->addAttributeToSort($this->getSortBy(),$this->getSortOrder());
-        }
-
-        return $collection;
+        return $this->getData('out_stock');
     }
+
+//    public function get
+
+
 
     public function getUniqueSliderKey()
     {
@@ -164,12 +210,12 @@ class Mostviewproduct extends \Magento\Catalog\Block\Product\AbstractProduct
 
     public function getPagerHtml()
     {
-        $total_limit=$this->getNoOfProduct();
-        $pagination=$this->getProductsPerPage();
-        $page_arr=explode(",", $pagination);
-        $limit=[];
+        $total_limit = $this->getNoOfProduct();
+        $pagination = $this->getProductsPerPage();
+        $page_arr = explode(",", $pagination);
+        $limit = [];
         foreach ($page_arr as $page) {
-            $limit[$page]=$page;
+            $limit[$page] = $page;
         }
 
         if ($this->getProductCollection()->getSize()) {
@@ -192,7 +238,6 @@ class Mostviewproduct extends \Magento\Catalog\Block\Product\AbstractProduct
         }
         return '';
     }
-
 
 
 }

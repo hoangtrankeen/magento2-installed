@@ -4,7 +4,7 @@ namespace Bss\Mostview\Block\Adminhtml\Widget;
 use Magento\Framework\Registry;
 use Magento\Backend\Block\Template\Context;
 
-class Date extends \Magento\Config\Block\System\Config\Form\Field
+class DatePicker extends \Magento\Config\Block\System\Config\Form\Field
 {
     /**
      * @var  Registry
@@ -47,10 +47,10 @@ class Date extends \Magento\Config\Block\System\Config\Form\Field
 //        $element->setData('after_element_html', $html->getElementHtml());
 //        return $element;
 
-        $input = $this->_elementFactory->create("date", ['data' => $element->getData()]);
+        $input = $this->_elementFactory->create("date",  ['data' => $element->getData()]);
         $input->setId($element->getId());
         $input->setForm($element->getForm());
-        $input->setFormat("yy/mm/dd");
+        $input->setFormat("dd/mm/yy");
         if ($element->getRequired()) {
             $input->addClass('required-entry');
         }

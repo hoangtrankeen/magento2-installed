@@ -18,6 +18,11 @@ use Magento\Framework\App\Action\Action;
 <?php
 $_productCollection = $this->getProductCollection();
 $_helper = $this->helper('Magento\Catalog\Helper\Output');
+$sliderId = '';
+if($this->getData('wd_slider'))
+{
+    $sliderId = 'product_slider_display';
+}
 ?>
 <?php if (!$_productCollection->count()): ?>
     <div class="message info empty"><div><?= /* @escapeNotVerified */ __('We can\'t find products matching the selection.') ?></div></div>
@@ -29,7 +34,7 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
     $viewMode = 'grid';
     $image = 'category_page_grid';
     $showDescription = false;
-    $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+    $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::DEFAULT_VIEW;
 
     /**
      * Position for actions regarding image size changing in vde if needed
@@ -38,24 +43,33 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
     ?>
     <div class="products wrapper  <?= /* @escapeNotVerified */ $viewMode ?> products-<?= /* @escapeNotVerified */ $viewMode ?>">
         <?php $iterator = 1; ?>
-        <ol class="products list items product-items widget-product-grid ">
+        <ol class="products list items product-items " id="<?= $sliderId ?>">
             <?php /** @var $_product \Magento\Catalog\Model\Product */ ?>
             <?php foreach ($_productCollection as $_product): ?>
 
                 <?php ?>
                 <?= /* @escapeNotVerified */ ($iterator++ == 1) ? '<li class="item product product-item">' : '</li><li class="item product product-item">' ?>
-                <div class="product-item-info" data-container="product-grid">
+                <div class="product-item-info" style="width: 200px !important;">
                     <?php
                     $productImage = $block->getImage($_product, $image);
                     if ($pos != null) {
                         $position = ' style="left:' . $productImage->getWidth() . 'px;'
                             . 'top:' . $productImage->getHeight() . 'px;"';
                     }
+
+                    $_imagehelper = $this->helper('Magento\Catalog\Helper\Image');
+                    $productImage = $_imagehelper->init($_product, 'category_page_list')->constrainOnly(FALSE)->keepAspectRatio(TRUE)->keepFrame(TRUE)->resize(240, 300)->getUrl();
                     ?>
                     <?php // Product Image ?>
-                    <a href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>" class="product photo product-item-photo" tabindex="-1">
-                        <?= $productImage->toHtml() ?>
-                    </a>
+                        <span style="width:240px;" class="product-image-container">
+                            <span style="padding-bottom: 125%;" class="product-image-wrapper">
+                                <img width="240" height="300"
+                                     alt="<?php echo $_product->getName(); ?>"
+                                        src="<?php echo $productImage; ?>"
+                                     class="product-image-photo "
+                                />
+                            </span>
+                        </span>
                     <div class="product details product-item-details">
                         <?php
                         $_productNameStripped = $block->stripTags($_product->getName(), null, true);
@@ -69,7 +83,8 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
 
                         <!--Show price-->
                         <?php if ($this->getData('show_price')) :?>
-                            <?= $block->getReviewsSummaryHtml($_product, $templateType) ?>
+
+
                             <?= /* @escapeNotVerified */ $block->getProductPrice($_product) ?>
                             <?= $block->getProductDetailsHtml($_product) ?>
                         <?php endif;?>
@@ -174,14 +189,30 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
         'slick'
     ], function ($) {
         jQuery(document).ready(function () {
-            jQuery(".widget-product-grid").slick({
-                slidesToShow: 4,
-                slidesToScroll: 1,
-                autoplay: true,
-                autoplaySpeed: 1000,
+            jQuery('#product_slider_display').slick({
                 centerMode: true,
-                dots: true,
-                infinite: true
+                centerPadding: '60px',
+                slidesToShow: 3,
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        settings: {
+                            arrows: false,
+                            centerMode: true,
+                            centerPadding: '40px',
+                            slidesToShow: 3
+                        }
+                    },
+                    {
+                        breakpoint: 480,
+                        settings: {
+                            arrows: false,
+                            centerMode: true,
+                            centerPadding: '40px',
+                            slidesToShow: 1
+                        }
+                    }
+                ]
             });
         });
     });

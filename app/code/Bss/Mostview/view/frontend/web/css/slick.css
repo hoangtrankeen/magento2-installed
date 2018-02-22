@@ -76,6 +76,8 @@
 
 .slick-slide
 {
+    padding-top: 15px !important;
+    padding-bottom: 35px !important;
     display: none;
     float: left;
 
